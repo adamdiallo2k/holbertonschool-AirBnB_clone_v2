@@ -1,14 +1,10 @@
 #!/usr/bin/python3
 """This is the place class
 """
-from models.base_model import BaseModel
-from models.base_model import Base
 from os import getenv
-from sqlalchemy import Column, String, ForeignKey, Integer, Float, Table
+from sqlalchemy import Column, Float, ForeignKey, Integer, String, Table
+from models.base_model import Base, BaseModel
 from sqlalchemy.orm import relationship
-from models.review import Review
-from models.amenity import Amenity
-
 
 association_table = Table("place_amenity", Base.metadata,
                           Column("place_id", String(60),
@@ -54,11 +50,10 @@ class Place(BaseModel, Base):
     if getenv("HBNB_TYPE_STORAGE", None) != "db":
         @property
         def reviews(self):
-            from models.__init__ import storage
             """Obtenir une liste de toutes les critiques.
             """
             all_reviews = []
-            for review in storage.all(Review).values():
+            for review in list(models.storage.all(Review).values()):
                 if review.place_id == self.id:
                     all_reviews.append(review)
             return all_reviews
@@ -67,15 +62,15 @@ class Place(BaseModel, Base):
         def amenities(self):
             """Obtenir les commodités liées.
             """
-            from models.__init__ import storage
             amenity_list = []
-            for amenity in storage.all(Amenity).values():
+            for amenity in list(models.storage.all(Amenity).values()):
                 if amenity.id in self.amenity_ids:
                     amenity_list.append(amenity)
             return amenity_list
 
         @amenities.setter
         def amenities(self, value):
-                """Set amenities."""
-                if isinstance(value, Amenity):
-                    self.amenity_ids.append(value.id)
+            """Définir les commodités.
+            """
+            if type(value) == Amenity:
+                self.amenity_ids.append(value.id)

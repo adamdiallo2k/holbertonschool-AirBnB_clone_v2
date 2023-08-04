@@ -70,7 +70,6 @@ class Place(BaseModel, Base):
 
         @amenities.setter
         def amenities(self, value):
-            """Définir les commodités.
-            """
-            if type(value) == Amenity:
-                self.amenity_ids.append(value.id)
+                """Set amenities."""
+                if isinstance(value, Amenity):
+                    self.amenity_ids.append(value.id)

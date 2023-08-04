@@ -3,10 +3,9 @@
 """
 from models.base_model import BaseModel
 from models.base_model import Base
-
+from os import getenv
 from sqlalchemy import Column, String, ForeignKey, Integer, Float, Table
 from sqlalchemy.orm import relationship
-
 
 
 association_table = Table("place_amenity", Base.metadata,
@@ -58,7 +57,7 @@ class Place(BaseModel, Base):
             """Obtenir une liste de toutes les critiques.
             """
             all_reviews = []
-            for review in storage().all(Review).values():
+            for review in list(models.storage.all(Review).values()):
                 if review.place_id == self.id:
                     all_reviews.append(review)
             return all_reviews

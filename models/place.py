@@ -52,6 +52,8 @@ class Place(BaseModel, Base):
         def reviews(self):
             """Obtenir une liste de toutes les critiques.
             """
+            from models.review import Review
+            from models import storage
             all_reviews = []
             for review in list(models.storage.all(Review).values()):
                 if review.place_id == self.id:

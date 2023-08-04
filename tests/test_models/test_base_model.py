@@ -1,102 +1,77 @@
-import unittest
+#!/usr/bin/python3
+"""This module defines a base class for all models in our hbnb clone"""
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 import uuid
 from datetime import datetime
-from models.base_model import BaseModel
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
 
 
-class TestBaseModel(unittest.TestCase):
-    def setUp(self):
-        self.base = BaseModel()
+class BaseModel:
+    """A base class for all hbnb models"""
 
-    def test_id_is_string(self):
-        """
-        Test that id is a string
-        """
-        self.assertIsInstance(self.base.id, str)
+    id = Column(String(60), nullable=False, primary_key=True)
+    created_at = Column(DateTime, default=datetime.utcnow(), nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow(), nullable=False)
 
-    def test_created_at_is_datetime(self):
-        """
-        Test that created_at is a datetime object
-        """
-        self.assertIsInstance(self.base.created_at, datetime)
+    def __init__(self, *args, **kwargs):
+        """Instatntiates a new model"""
+        if not kwargs:
+            from models import storage
+            self.id = str(uuid.uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
+        else:
+            # print(kwargs)
+            for key, value in kwargs.items():
+                if key == '__class__':
+                    continue
+                setattr(self, key, value)
+            try:
+                kwargs['updated_at'] = datetime.\
+                                       strptime(kwargs['updated_at'],
+                                                '%Y-%m-%dT%H:%M:%S.%f')
+                kwargs['created_at'] = datetime.\
+                    strptime(kwargs['created_at'],
+                             '%Y-%m-%dT%H:%M:%S.%f')
+                del kwargs['__class__']
+            except KeyError:
+                self.id = str(uuid.uuid4())
+                self.created_at = datetime.now()
+                self.updated_at = datetime.now()
 
-    def test_updated_at_is_datetime(self):
-        """
-        Test that updated_at is a datetime object
-        """
-        self.assertIsInstance(self.base.updated_at, datetime)
+            self.__dict__.update(kwargs)
 
-    def test_save_updates_updated_at(self):
-        """
-        Test that save() updates the updated_at attribute
-        """
-        old_updated_at = self.base.updated_at
-        self.base.save()
-        self.assertNotEqual(old_updated_at, self.base.updated_at)
+    def __str__(self):
+        """Returns a string representation of the instance"""
+        cls = (str(type(self)).split('.')[-1]).split('\'')[0]
+        return '[{}] ({}) {}'.format(cls, self.id, self.__dict__)
 
-    def test_to_dict_returns_dict(self):
-        """
-        Test that to_dict() returns a dictionary
-        """
-        dict_obj = self.base.to_dict()
-        self.assertIsInstance(dict_obj, dict)
+    def save(self):
+        """Updates updated_at with current time when instance is changed"""
+        from models import storage
+        self.updated_at = datetime.now()
+        storage.new(self)
+        storage.save()
 
-    def test_to_dict_has_expected_keys(self):
-        """
-        Test that to_dict() returns a dictionary with the expected keys
-        """
-        expected_keys = ['id', 'created_at', 'updated_at', '__class__']
-        dict_obj = self.base.to_dict()
-        self.assertCountEqual(dict_obj.keys(), expected_keys)
+    def to_dict(self):
+        """Convert instance into dict format"""
+        dictionary = {}
+        dictionary.update(self.__dict__)
+        dictionary.update({'__class__':
+                          (str(type(self)).split('.')[-1]).split('\'')[0]})
+        dictionary['created_at'] = self.created_at.isoformat()
+        dictionary['updated_at'] = self.updated_at.isoformat()
 
-    def test_to_dict_id_is_str(self):
-        """
-        Test that the 'id' key in to_dict() is a string
-        """
-        dict_obj = self.base.to_dict()
-        self.assertIsInstance(dict_obj['id'], str)
+        try:
+            del dictionary["_sa_instance_state"]
+        except Exception:
+            return dictionary
 
-    def test_to_dict_created_at_is_str(self):
-        """
-        Test that the 'created_at' key in to_dict() is a string
-        """
-        dict_obj = self.base.to_dict()
-        self.assertIsInstance(dict_obj['created_at'], str)
+        return dictionary
 
-    def test_to_dict_updated_at_is_str(self):
-        """
-        Test that the 'updated_at' key in to_dict() is a string
-        """
-        dict_obj = self.base.to_dict()
-        self.assertIsInstance(dict_obj['updated_at'], str)
-
-    def test_to_dict_has_classname(self):
-        """
-        Test that the '__class__' key in to_dict() has the expected value
-        """
-        dict_obj = self.base.to_dict()
-        self.assertEqual(dict_obj['__class__'], 'BaseModel')
-
-    def test_str_method(self):
-        """
-        Test that the __str__ method returns the expected string
-        """
-        base = BaseModel()
-        expected_str = "[BaseModel] ({}) {}".format(base.id, base.__dict__)
-        self.assertEqual(str(base), expected_str)
-
-    def test_init_kwargs(self):
-        """
-        Test that __init__ correctly sets attributes using **kwargs
-        """
-        id_val = str(uuid.uuid4())
-        time_val = datetime.utcnow()
-        kwargs = {'id': id_val, 'created_at': time_val, 'updated_at': time_val}
-        base = BaseModel(**kwargs)
-        self.assertEqual(base.id, id_val)
-        self.assertEqual(base.created_at, time_val)
-        self.assertEqual(base.updated_at, time_val)
-
-
-if __name__ == '__main__':
-    unittest.main()
+    def delete(self):
+        """Module is doc"""
+        from models import storage
+        storage.delete(self)

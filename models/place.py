@@ -2,16 +2,9 @@
 """This is the place class
 """
 from os import getenv
-from sqlalchemy import Column
-from sqlalchemy import Float
-from sqlalchemy import ForeignKey
-from sqlalchemy import Integer
-from sqlalchemy import String
-from sqlalchemy import Table
-from models.base_model import Base
-from models.base_model import BaseModel
+from sqlalchemy import Column, Float, ForeignKey, Integer, String, Table
+from models.base_model import Base, BaseModel
 from sqlalchemy.orm import relationship
-
 
 association_table = Table("place_amenity", Base.metadata,
                           Column("place_id", String(60),
@@ -23,19 +16,21 @@ association_table = Table("place_amenity", Base.metadata,
 
 
 class Place(BaseModel, Base):
-    """This is the class for Place
-    Attributes:
-        city_id: city id
-        user_id: user id
-        name: name input
-        description: string of description
-        number_rooms: number of room in int
-        number_bathrooms: number of bathrooms in int
-        max_guest: maximum guest in int
-        price_by_night:: pice for a staying in int
-        latitude: latitude in flaot
-        longitude: longitude in float
-        amenity_ids: list of Amenity ids
+    """Ceci est la classe pour Place
+    Attributs:
+        city_id: identifiant de la ville
+        user_id: identifiant de l'utilisateur
+        name: nom de la place
+        description: description sous forme de chaîne
+        number_rooms: nombre de chambres en entier (par défaut 0)
+        number_bathrooms: nombre de salles de bain en entier (par défaut 0)
+        max_guest: nombre maximum d'invités en entier (par défaut 0)
+        price_by_night: prix pour une nuitée en entier (par défaut 0)
+        latitude: latitude en flottant
+        longitude: longitude en flottant
+        reviews: relation avec les critiques (relie à la classe "Review")
+        amenities: relation avec les commodités (relie à la classe "Amenity")
+        amenity_ids: liste des identifiants d'amenities
     """
     __tablename__ = "places"
     city_id = Column(String(60), ForeignKey("cities.id"), nullable=False)
@@ -49,14 +44,13 @@ class Place(BaseModel, Base):
     latitude = Column(Float)
     longitude = Column(Float)
     reviews = relationship("Review", backref="place", cascade="delete")
-    amenities = relationship("Amenity", secondary="place_amenity",
-                             viewonly=False)
+    amenities = relationship("Amenity", secondary="place_amenity", viewonly=False)
     amenity_ids = []
 
     if getenv("HBNB_TYPE_STORAGE", None) != "db":
         @property
         def reviews(self):
-            """Get a list of all Reviews.
+            """Obtenir une liste de toutes les critiques.
             """
             all_reviews = []
             for review in list(models.storage.all(Review).values()):
@@ -66,7 +60,7 @@ class Place(BaseModel, Base):
 
         @property
         def amenities(self):
-            """Get related Amenities.
+            """Obtenir les commodités liées.
             """
             amenity_list = []
             for amenity in list(models.storage.all(Amenity).values()):
@@ -76,7 +70,7 @@ class Place(BaseModel, Base):
 
         @amenities.setter
         def amenities(self, value):
-            """Set Amenities.
+            """Définir les commodités.
             """
             if type(value) == Amenity:
                 self.amenity_ids.append(value.id)

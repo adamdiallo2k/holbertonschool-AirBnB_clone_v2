@@ -6,6 +6,7 @@ from models.base_model import Base
 from os import getenv
 from sqlalchemy import Column, String, ForeignKey, Integer, Float, Table
 from sqlalchemy.orm import relationship
+from models.review import Review
 
 
 association_table = Table("place_amenity", Base.metadata,
@@ -52,12 +53,11 @@ class Place(BaseModel, Base):
     if getenv("HBNB_TYPE_STORAGE", None) != "db":
         @property
         def reviews(self):
-            from models.review import Review
-            from models import storage
+            from models.__init__ import storage
             """Obtenir une liste de toutes les critiques.
             """
             all_reviews = []
-            for review in list(models.storage.all(Review).values()):
+            for review in storage.all(Review).values():
                 if review.place_id == self.id:
                     all_reviews.append(review)
             return all_reviews

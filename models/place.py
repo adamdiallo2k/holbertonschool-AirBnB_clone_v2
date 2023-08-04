@@ -7,6 +7,7 @@ from os import getenv
 from sqlalchemy import Column, String, ForeignKey, Integer, Float, Table
 from sqlalchemy.orm import relationship
 from models.review import Review
+from models.amenity import Amenity
 
 
 association_table = Table("place_amenity", Base.metadata,
@@ -66,8 +67,9 @@ class Place(BaseModel, Base):
         def amenities(self):
             """Obtenir les commodités liées.
             """
+            from models.__init__ import storage
             amenity_list = []
-            for amenity in list(models.storage.all(Amenity).values()):
+            for amenity in storage.all(Amenity).values():
                 if amenity.id in self.amenity_ids:
                     amenity_list.append(amenity)
             return amenity_list

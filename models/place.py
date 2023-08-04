@@ -1,10 +1,13 @@
 #!/usr/bin/python3
 """This is the place class
 """
-from os import getenv
-from sqlalchemy import Column, Float, ForeignKey, Integer, String, Table
-from models.base_model import Base, BaseModel
+from models.base_model import BaseModel
+from models.base_model import Base
+
+from sqlalchemy import Column, String, ForeignKey, Integer, Float, Table
 from sqlalchemy.orm import relationship
+
+
 
 association_table = Table("place_amenity", Base.metadata,
                           Column("place_id", String(60),
@@ -50,12 +53,12 @@ class Place(BaseModel, Base):
     if getenv("HBNB_TYPE_STORAGE", None) != "db":
         @property
         def reviews(self):
-            """Obtenir une liste de toutes les critiques.
-            """
             from models.review import Review
             from models import storage
+            """Obtenir une liste de toutes les critiques.
+            """
             all_reviews = []
-            for review in list(models.storage.all(Review).values()):
+            for review in storage().all(Review).values():
                 if review.place_id == self.id:
                     all_reviews.append(review)
             return all_reviews

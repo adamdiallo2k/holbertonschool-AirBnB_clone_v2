@@ -18,7 +18,8 @@ def hello_world():
 @app.route("/c/<text>", strict_slashes=False)
 def display_text(text):
     """Returns a string with 'C' followed by the captured text."""
-    return f'C {text}'
+    text_with_spaces = text.replace("_", " ")
+    return f'C {text_with_spaces}'
 
 
 @app.route("/hbnb", strict_slashes=False)

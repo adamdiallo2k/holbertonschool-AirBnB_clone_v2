@@ -15,7 +15,7 @@ def hello_world():
     return "Hello HBNB!"
 
 @app.route("/hbnb", strict_slashes=False)
-def hello_world():
+def hello_magic():
     """Returns a string for the root route."""
     return "HBNB"
 

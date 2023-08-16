@@ -1,12 +1,13 @@
 #!/usr/bin/python3
 """
-This module starts a 
+This module starts a
 Flask web application with the following specifications:
 """
 
 from flask import Flask
 
 app = Flask(__name__)
+
 
 @app.route("/", strict_slashes=False)
 def hello_world():

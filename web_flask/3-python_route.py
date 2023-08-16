@@ -31,7 +31,8 @@ def about():
 @app.route('/python/', defaults={'text': 'is cool'}, strict_slashes=False)
 @app.route('/python/<text>', strict_slashes=False)
 def show_python(text):
-    """Display 'Python', followed by the value of the text variable with underscores replaced by spaces."""
+    """Display 'Python', followed by the value of the text 
+    variable with underscores replaced by spaces."""
     text_with_spaces = text.replace("_", " ")
     return f'Python {text_with_spaces}'
 

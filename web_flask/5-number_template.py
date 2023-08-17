@@ -4,7 +4,7 @@ This module starts a
 Flask web application with the following specifications:
 """
 
-from flask import Flask, abort
+from flask import Flask, abort, render_template
 
 app = Flask(__name__)
 
@@ -47,10 +47,10 @@ def number(n):
 
 
 @app.route("/number_template/<n>", strict_slashes=False)
-def number(n):
+def numberTemp(n):
     """display “n is a number” only if n is an integer"""
     if n.isdigit():
-        return f'<body> <h1>{n}<h1> <body>'
+        return render_template('templates/5-numbers.html')
     else:
         return abort(404)
 

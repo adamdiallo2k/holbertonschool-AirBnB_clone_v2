@@ -4,7 +4,7 @@ This module starts a
 Flask web application with the following specifications:
 """
 
-from flask import Flask
+from flask import Flask, abort
 
 app = Flask(__name__)
 
@@ -43,7 +43,7 @@ def number(n):
     if n.isdigit():
         return f'{n} is a number'
     else:
-        return f'404'
+        return abort(404)
 
 if __name__ == "__main__": 
     app.run(host="0.0.0.0", port=5000)

@@ -58,7 +58,7 @@ def numberTemp(n):
 def numberOddev(n):
     """display “n is a number” only if n is an integer"""
     if n.isdigit():
-        return render_template('6-number_odd_or_even.html', n=n)
+        return render_template('6-number_odd_or_even.html', n=int(n))
     else:
         return abort(404)
 

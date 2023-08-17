@@ -42,6 +42,8 @@ def number(n):
     """display “n is a number” only if n is an integer"""
     if n.isdigit():
         return f'{n} is a number'
+    else:
+        return f'404'
 
 if __name__ == "__main__": 
     app.run(host="0.0.0.0", port=5000)

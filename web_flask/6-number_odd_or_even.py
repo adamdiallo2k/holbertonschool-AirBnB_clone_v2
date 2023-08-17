@@ -57,10 +57,8 @@ def numberTemp(n):
 @app.route("/number_odd_or_even/<int:n>", strict_slashes=False)
 def numberOddev(n):
     """display “n is a number” only if n is an integer"""
-    if n.isdigit():
-        return render_template('6-number_odd_or_even.html', num=n)
-    else:
-        return abort(404)
+    return render_template('6-number_odd_or_even.html', num=n)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

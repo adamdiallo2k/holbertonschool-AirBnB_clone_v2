@@ -50,7 +50,7 @@ def number(n):
 def numberTemp(n):
     """display “n is a number” only if n is an integer"""
     if n.isdigit():
-        return render_template('templates/5-numbers.html')
+        return render_template('5-number.html', n=n)
     else:
         return abort(404)
 

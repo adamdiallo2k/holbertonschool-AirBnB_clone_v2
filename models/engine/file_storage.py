@@ -82,3 +82,4 @@ class FileStorage:
         Close session
         """
         reload(self)
+        

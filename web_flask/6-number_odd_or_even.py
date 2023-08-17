@@ -54,6 +54,7 @@ def numberTemp(n):
     else:
         return abort(404)
 
+
 @app.route("/number_odd_or_even/<int:n>", strict_slashes=False)
 def numberOddev(n):
     """display “n is a number” only if n is an integer"""

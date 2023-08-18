@@ -63,9 +63,8 @@ def numberOddev(n):
 @app.route('/states_list')
 def states_list():
     """Display a list of all State objects sorted by name."""
-    states = storage.all("State").values()
-    sorted_states = sorted(states, key=lambda state: state.name)
-    return render_template('states_list.html', states=sorted_states)
+    listedstates = storage.all("State")
+    return render_template('states_list.html', listedstates)
 
 
 @app.teardown_appcontext

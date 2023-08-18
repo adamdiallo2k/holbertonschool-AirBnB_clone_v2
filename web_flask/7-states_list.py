@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """ Script that runs an app with Flask framework """
 from flask import Flask, render_template
+from models import *
 
 app = Flask(__name__)
 
@@ -58,6 +59,22 @@ def number_odd_or_even(n):
     Function called with /number_odd_or_even/<int:n> route
     """
     return render_template('6-number_odd_or_even.html', num=n)
+
+
+@app.route('/states_list', strict_slashes=False)
+def states_list():
+    """
+    Function called with /states_list route
+    Display html page
+    """
+    list_states = storage.all("State")
+    return render_template('7-states_list.html', states=list_states)
+
+
+@app.teardown_appcontext
+def teardown(err):
+    """remove the current session"""
+    storage.close()
 
 
 if __name__ == "__main__":

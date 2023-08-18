@@ -9,12 +9,6 @@ from flask import Flask, abort, render_template
 app = Flask(__name__)
 
 
-@app.teardown_appcontext
-def teardown_db(exception):
-    """Close the storage after each request."""
-    storage.close()
-
-
 @app.route("/", strict_slashes=False)
 def hello_world():
     """Returns a string for the root route."""
@@ -73,6 +67,13 @@ def states_list():
     states = storage.all("State").values()
     sorted_states = sorted(states, key=lambda state: state.name)
     return render_template('states_list.html', states=sorted_states)
+
+
+@app.teardown_appcontext
+def teardown_db(exception):
+    """Close the storage after each request."""
+    storage.close()
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

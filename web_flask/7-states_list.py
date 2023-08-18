@@ -64,7 +64,7 @@ def numberOddev(n):
 def states_list():
     """Display a list of all State objects sorted by name."""
     listedstates = storage.all("State")
-    return render_template('states_list.html', listedstates)
+    return render_template('states_list.html', listedstates=listedstatestates)
 
 
 @app.teardown_appcontext

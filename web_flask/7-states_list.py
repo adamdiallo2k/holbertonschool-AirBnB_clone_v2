@@ -14,6 +14,7 @@ def teardown_db(exception):
     """Close the storage after each request."""
     storage.close()
 
+
 @app.route("/", strict_slashes=False)
 def hello_world():
     """Returns a string for the root route."""
@@ -64,6 +65,7 @@ def numberTemp(n):
 def numberOddev(n):
     """display “n is a number” only if n is an integer"""
     return render_template('6-number_odd_or_even.html', num=n)
+
 
 @app.route('/states_list')
 def states_list():

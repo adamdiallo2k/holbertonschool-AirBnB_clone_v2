@@ -4,10 +4,10 @@ This module starts a
 Flask web application with the following specifications:
 """
 from models import storage and storage.all(...)
-
 from flask import Flask, abort, render_template
 
 app = Flask(__name__)
+
 
 @app.teardown_appcontext
 def teardown_db(exception):
